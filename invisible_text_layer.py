@@ -49,6 +49,10 @@ _HELVETICA_ASCII_WIDTHS = (
 # The width for a Helvetica character that the metrics table does not list.
 _HELVETICA_FALLBACK_WIDTH = 556
 
+# The smallest font size that the tool accepts, in points. Text below this
+# size stays readable for a text extractor, but the margin is unknown for
+# every extractor. The layer is invisible at every size, so a larger size
+# gives no benefit.
 MIN_FONT_SIZE = 0.5
 MAX_CID_COUNT = 0xFFFF
 
@@ -317,11 +321,15 @@ def plan_layout(
 ) -> Layout:
     """Fit the text into the box and return the placement of every line.
 
-    box is (left, bottom, right, top) in PDF user space units. The function
-    reduces the font size until the lines fit in the box. MIN_FONT_SIZE is the
-    lower limit. If the lines still do not fit, the function reduces the line
-    spacing and sets Layout.overflow to True.
+    box is (left, bottom, right, top) in PDF user space units. font_size is the
+    start size and MIN_FONT_SIZE is the lower limit. The function reduces the
+    size until the lines fit in the box. If the lines still do not fit, the
+    function reduces the line spacing and sets Layout.overflow to True.
     """
+    if font_size < MIN_FONT_SIZE:
+        raise InvisibleTextLayerError(
+            f"the font size {font_size:g} is below the minimum of {MIN_FONT_SIZE:g} points"
+        )
     left, bottom, right, top = box
     usable_width = (right - left) - 2 * margin
     usable_height = (top - bottom) - 2 * margin
@@ -594,7 +602,7 @@ def add_invisible_text(
     text: str,
     *,
     font_mode: str = "auto",
-    font_size: float = 8.0,
+    font_size: float = MIN_FONT_SIZE,
     margin: float = 18.0,
     position: str = "bottom",
     compress: bool = True,
@@ -687,7 +695,7 @@ def process(
     *,
     pages: str = "last",
     font_mode: str = "auto",
-    font_size: float = 8.0,
+    font_size: float = MIN_FONT_SIZE,
     margin: float = 18.0,
     position: str = "bottom",
     password: str | None = None,
@@ -797,8 +805,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="the font type (default: auto)",
     )
     parser.add_argument(
-        "--font-size", type=float, default=8.0,
-        help="the start font size in points (default: 8)",
+        "--font-size", type=float, default=MIN_FONT_SIZE,
+        help=(
+            f"the start font size in points "
+            f"(default and minimum: {MIN_FONT_SIZE:g})"
+        ),
     )
     parser.add_argument(
         "--margin", type=float, default=18.0,

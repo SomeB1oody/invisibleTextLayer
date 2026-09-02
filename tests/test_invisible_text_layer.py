@@ -1,5 +1,6 @@
 """Tests for invisible_text_layer. Run with: python3 -m unittest discover tests"""
 
+import re
 import shutil
 import sys
 import tempfile
@@ -96,6 +97,18 @@ class TestBasics(TempCase):
     def test_verification_reports_success(self):
         self.assertIs(self.run_tool("out.pdf", CJK).verified, True)
 
+    def test_default_run_uses_the_minimum_size(self):
+        result = self.run_tool("out.pdf", CJK)
+        self.assertEqual(result.font_size, itl.MIN_FONT_SIZE)
+        self.assertIn(flat(CJK), flat(PdfReader(str(result.output)).pages[2].extract_text()))
+
+    def test_many_lines_keep_their_order(self):
+        text = "\n".join(f"LINE{index:03d} 第{index}行 payload" for index in range(1, 41))
+        result = self.run_tool("out.pdf", text)
+        found = PdfReader(str(result.output)).pages[2].extract_text()
+        numbers = [int(value) for value in re.findall(r"LINE(\d{3})", found)]
+        self.assertEqual(numbers, list(range(1, 41)))
+
 
 class TestPageSelection(TempCase):
     def test_all_pages(self):
@@ -150,6 +163,20 @@ class TestLayout(unittest.TestCase):
         bottom = layout.y - (len(layout.lines) - 1) * layout.leading
         self.assertLessEqual(top, 792 - 18 + 1)
         self.assertGreaterEqual(bottom, 18 - 1)
+
+    def test_default_size_is_the_minimum(self):
+        self.assertEqual(itl.build_parser().parse_args(["x.pdf"]).font_size, itl.MIN_FONT_SIZE)
+
+    def test_size_below_the_minimum_fails(self):
+        with self.assertRaises(itl.InvisibleTextLayerError):
+            itl.plan_layout("x", itl.LatinFont(), (0, 0, 612, 792), 0.4, 18.0, "bottom")
+
+    def test_minimum_size_needs_no_shrink(self):
+        layout = itl.plan_layout(
+            "word " * 200, itl.LatinFont(), (0, 0, 612, 792), itl.MIN_FONT_SIZE, 18.0, "bottom"
+        )
+        self.assertEqual(layout.font_size, itl.MIN_FONT_SIZE)
+        self.assertFalse(layout.overflow)
 
     def test_margin_too_large(self):
         with self.assertRaises(itl.InvisibleTextLayerError):

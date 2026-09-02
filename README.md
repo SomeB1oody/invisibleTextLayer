@@ -54,7 +54,7 @@ text. The exit code is 0 after a successful check.
 | `-f`, `--text-file` | | A UTF-8 file with the text. `-` reads stdin. |
 | `-p`, `--pages` | `last` | The target pages. See below. |
 | `--font` | `auto` | `auto`, `latin` or `unicode`. |
-| `--font-size` | `8` | The start font size in points. |
+| `--font-size` | `0.5` | The start font size in points. 0.5 is also the minimum. |
 | `--margin` | `18` | The page margin in points. |
 | `--position` | `bottom` | The anchor of the text block: `bottom` or `top`. |
 | `--password` | | The password of an encrypted input file. |
@@ -79,11 +79,18 @@ The `auto` mode selects the font from the text.
 
 ## Layout
 
+The layer uses the smallest font size by default, which is 0.5 points. The
+size does not change the look of the page, because the layer is invisible at
+every size. A small size holds more text on one page and gives a small
+selection area. A page of 612 x 792 points holds more than one million Latin
+characters at this size. The tool rejects a smaller size, because an unknown
+extractor can drop text below this limit.
+
 The tool breaks the text into lines that fit the page. A `\n` in the text
-starts a new line. If the lines do not fit, the tool reduces the font size to
-a lower limit of 0.5 points. If the lines still do not fit, the tool reduces
-the line spacing and prints a warning. The lines then overlap. The text stays
-invisible and readable for an extractor in all of these cases.
+starts a new line. If the lines do not fit, the tool reduces the font size
+down to the 0.5 point limit. If the lines still do not fit, the tool reduces
+the line spacing and prints a warning. The lines then overlap. A text
+extractor still reads the lines in order.
 
 ## Python API
 
