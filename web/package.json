@@ -1,0 +1,19 @@
+{
+  "name": "you-cant-see-me",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test test/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cantoo/pdf-lib": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}

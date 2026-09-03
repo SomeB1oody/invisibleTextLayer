@@ -1,0 +1,233 @@
+<title>You Can't See Me</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #eef0f4;
+    --surface: #ffffff;
+    --ink: #12151a;
+    --muted: #5a626d;
+    --line: #d7dbe2;
+    --accent: #2b6cb8;
+    --accent-wash: rgba(43, 108, 184, 0.11);
+    --good: #2f7d53;
+    --bad: #b0422e;
+    --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #121417;
+      --surface: #1a1d22;
+      --ink: #e6e9ed;
+      --muted: #8f97a3;
+      --line: #292e36;
+      --accent: #6ba4e8;
+      --accent-wash: rgba(107, 164, 232, 0.15);
+      --good: #6dbf8e;
+      --bad: #e28a77;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #121417;
+    --surface: #1a1d22;
+    --ink: #e6e9ed;
+    --muted: #8f97a3;
+    --line: #292e36;
+    --accent: #6ba4e8;
+    --accent-wash: rgba(107, 164, 232, 0.15);
+    --good: #6dbf8e;
+    --bad: #e28a77;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--accent-wash);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .page {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 56px 24px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 6vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin: 0;
+    max-width: 56ch;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .drop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 128px;
+    padding: 20px;
+    border: 1.5px dashed var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.875rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+  }
+
+  .drop:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+
+  .drop[data-drag="over"] {
+    border-style: solid;
+    border-color: var(--accent);
+    background: var(--accent-wash);
+    color: var(--ink);
+  }
+
+  .drop[data-state="loaded"] {
+    border-style: solid;
+    border-color: var(--accent);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    word-break: break-all;
+  }
+
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    resize: vertical;
+    transition: border-color 0.15s;
+  }
+
+  textarea:hover,
+  textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .run {
+    padding: 13px 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .run:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+
+  .run:disabled {
+    background: var(--line);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .status {
+    margin: 0;
+    min-height: 1.5em;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .status[data-tone="good"] { color: var(--good); }
+  .status[data-tone="bad"] { color: var(--bad); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<main class="page">
+  <header class="masthead">
+    <h1>You Can't See Me</h1>
+    <p class="lede">
+      Write text into a PDF that nobody can see and every text extractor can read.
+      The page count stays the same, and the file never leaves this browser.
+    </p>
+  </header>
+
+  <section class="field">
+    <span class="label">PDF file</span>
+    <button type="button" id="drop" class="drop" data-state="empty">
+      <span id="drop-label">Drop a PDF here, or click to choose one</span>
+    </button>
+    <input type="file" id="file" accept="application/pdf,.pdf" hidden>
+  </section>
+
+  <section class="field">
+    <label class="label" for="text">Invisible text</label>
+    <textarea id="text" rows="6" spellcheck="false">内部草稿 2026-09-02 · internal draft, do not redistribute</textarea>
+  </section>
+
+  <button type="button" id="run" class="run" disabled>Add the layer</button>
+
+  <p class="status" id="status" data-tone="idle">
+    The layer goes on the last page, at 0.5 pt, in text rendering mode 3.
+  </p>
+</main>
+<!--SCRIPT-->

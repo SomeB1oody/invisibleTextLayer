@@ -1,3 +1,4 @@
 __pycache__/
 *.pyc
 *.invisible.pdf
+.DS_Store

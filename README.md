@@ -17,6 +17,17 @@ the last page, so the text lands at the end of the document.
 The tool does not touch the original content streams. It adds new objects and
 puts them after the existing ones.
 
+## Two tools, one behavior
+
+| | Where it runs | Best for |
+| :--- | :--- | :--- |
+| `invisible_text_layer.py` | The command line, with Python. | Batch work and scripts. |
+| `web/` | The browser, with no install. | Sharing a link. |
+
+Both write the same content stream. `web/tools/crosscheck.mjs` runs the two on
+the same input and compares the bytes. The rest of this file covers the command
+line tool. `web/README.md` covers the page.
+
 ## Install
 
 The tool needs Python 3.9 or later and pypdf.
