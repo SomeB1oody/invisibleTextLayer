@@ -34,6 +34,20 @@ node tools/crosscheck.mjs   # compares the output with the Python tool
 `dist/artifact.html` holds the same page without the document wrapper, for a
 host that supplies one.
 
+## Deploy to GitHub Pages
+
+`.github/workflows/pages.yml` builds the page and deploys it. The workflow runs
+on a push to `main` and on a manual start. It runs the type check and the tests
+first, so a broken build never reaches the site.
+
+The repository needs one setting before the first run:
+
+1. Open **Settings** then **Pages** in the repository.
+2. Set **Source** to **GitHub Actions**.
+
+The site then serves `dist/index.html` at the root of the Pages URL. The
+workflow builds from `src/`, so the site always matches the source.
+
 ## How the layer works
 
 The layer uses PDF text rendering mode 3. A viewer draws nothing for this mode.

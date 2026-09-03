@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node --test test/",
-    "typecheck": "tsc --noEmit"
+    "test": "node --test \"test/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "crosscheck": "node tools/crosscheck.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.9.1"
